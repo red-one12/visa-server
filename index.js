@@ -34,6 +34,12 @@ async function run() {
 
 
 
+    app.post('/visa', async(req, res) => {
+      const newVisa = req.body;
+      console.log(newVisa);
+      
+    })
+
 
 
 
