@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -34,13 +34,20 @@ async function run() {
 
     const database = client.db("visaDB");
     const visaCollection = database.collection("visa");
+    const applicationCollection = database.collection("application")
 
 
 
 
 
 
+    app.get('/visa', async(req, res) => {
+      const cursor = visaCollection.find();
+      const result = await cursor.toArray();
 
+
+      res.send(result);
+    })
 
 
 
@@ -48,6 +55,14 @@ async function run() {
       const newVisa = req.body;
       console.log(newVisa);
       const result = await visaCollection.insertOne(newVisa);
+      res.send(result);
+    })
+
+
+    app.get('/visa/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await visaCollection.findOne(query);
       res.send(result);
     })
 
@@ -61,7 +76,25 @@ async function run() {
 
 
 
-    
+
+
+
+
+    // for application of visa
+    app.post('/application', async(req, res) => {
+      const newApplication = req.body;
+      console.log(newApplication);
+      const result = await applicationCollection.insertOne(newApplication);
+      res.send(result);
+    })
+
+    app.get('/application', async(req, res) => {
+      const cursor = applicationCollection.find();
+      const result = await cursor.toArray();
+
+
+      res.send(result);
+    })
 
 
 
