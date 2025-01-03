@@ -29,37 +29,42 @@ async function run() {
     const applicationCollection = database.collection("application");
 
     app.post('/visa', async (req, res) => {
-      try {
+   
         const newVisa = req.body;
         const result = await visaCollection.insertOne(newVisa);
         res.status(201).send(result);
-      } catch (error) {
-        res.status(500).send({ message: 'Error adding visa', error });
-      }
+      
     });
 
     app.get('/visa', async (req, res) => {
-      try {
+    
         const visa = visaCollection.find();
         const result = await visa.toArray();
         res.status(200).send(result);
-      } catch (error) {
-        res.status(500).send({ message: 'Error fetching visas', error });
-      }
+     
     });
+    app.get('/visa/:id', async (req, res) => {
+    
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await visaCollection.findOne(query);
+        res.send(result);
+    });
+    
 
-    app.get('/application', async (req, res) => {
-      try {
-        const application = applicationCollection.find();
-        const result = await application.toArray();
-        res.status(200).send(result);
-      } catch (error) {
-        res.status(500).send({ message: 'Error fetching applications', error });
-      }
-    });
+
+
+
+
+
+
+
+
+
+    
 
     app.put('/visa/:id', async (req, res) => {
-      try {
+   
         const id = req.params.id;
         const updatedVisa = req.body;
         const filter = { _id: new ObjectId(id) };
@@ -70,21 +75,53 @@ async function run() {
         };
         const result = await visaCollection.updateOne(filter, updateDoc);
         res.status(200).send(result);
-      } catch (error) {
-        res.status(500).send({ message: 'Error updating visa', error });
-      }
+      
     });
 
     app.delete('/visa/:id', async (req, res) => {
-      try {
+     
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await visaCollection.deleteOne(query);
         res.status(200).send(result);
-      } catch (error) {
-        res.status(500).send({ message: 'Error deleting visa', error });
-      }
+      
     });
+
+
+
+
+
+    app.post('/application', async(req, res) => {
+      const newApplication = req.body;
+      console.log(newApplication);
+      const result = await applicationCollection.insertOne(newApplication);
+      res.send(result);
+    })
+
+    app.get('/application', async (req, res) => {
+     
+      const application = applicationCollection.find();
+      const result = await application.toArray();
+      res.status(200).send(result);
+   
+  });
+
+  app.get('/application/:id', async (req, res) => {
+  
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await applicationCollection.findOne(query);
+
+  
+      res.send(result);
+    
+  });
+  
+
+
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
